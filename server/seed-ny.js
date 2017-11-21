@@ -550,6 +550,7 @@ db
     console.log("Dropped old data, now inserting data");
     return Promise.map(Object.keys(data), function(name) {
       return Promise.map(data[name], function(item) {
+        console.log('!!!!!!!!!!',name)
         return db.model(name).create(item, {
           include: [Place]
         });
