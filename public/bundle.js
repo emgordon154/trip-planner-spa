@@ -579,37 +579,40 @@ function generateOptions(hotels, activities, restaurants) {
 function generateButtons(places) {
   Array.from(document.getElementsByClassName('options-btn')).forEach(button =>
     button.addEventListener('click', event => {
-      let newLi= document.createElement('li')
-      newLi.classList.add('itinerary-li')
-
       let typeOfPlace = button.id.split('-')[0]
       let whichItineraryPart = document.getElementById(typeOfPlace + '-list')
       let selectElement = document.getElementById(typeOfPlace + '-choices')
       let placeName = selectElement.value
-  
-      let newItineraryItem = createNewItineraryItem(button, placeName)
-      newLi.append(newItineraryItem)
-  
-      let newButton = createRemoveButton(placeName, newLi)
-      newLi.append(newButton)
-  
-      whichItineraryPart.append(newLi)
-  
-  
-      let place = places[typeOfPlace].find(place => place.name == placeName)
-      let newMarker = buildMarker(typeOfPlace, place.place.location) // forgive us Tom and Kate
-      newMarker.addTo(map)
-  
-      map.flyTo({
-        center: place.place.location,
-        zoom: 14
-      })
+
+      liAndFly(button, placeName, whichItineraryPart, places, typeOfPlace)
     })
   )
 }
 
-function createNewItineraryItem(button, placeName) {
+function liAndFly(button, placeName, whichItineraryPart, places, typeOfPlace) {
+  let newLi = document.createElement('li')
+  newLi.classList.add('itinerary-li')
 
+  let newItineraryItem = createNewItineraryItem(button, placeName)
+  newLi.append(newItineraryItem)
+
+  let newButton = createRemoveButton(placeName, newLi)
+  newLi.append(newButton)
+
+  whichItineraryPart.append(newLi)
+
+
+  let place = places[typeOfPlace].find(place => place.name == placeName)
+  let newMarker = buildMarker(typeOfPlace, place.place.location) // forgive us Tom and Kate
+  newMarker.addTo(map)
+
+  map.flyTo({
+    center: place.place.location,
+    zoom: 14
+  })
+}
+
+function createNewItineraryItem(button, placeName) {
   let newItineraryItem = document.createElement('h4')
   newItineraryItem.classList.add('itinerary-place')
   newItineraryItem.textContent = placeName
@@ -649,6 +652,10 @@ function createRemoveButton(placeName, newLi) {
 //   restaurantEl.textContent = restaurant.name
 //   document.getElementById('restaurants-choices').append(restaurantEl);
 // })
+
+
+// let newLi; (newLi = document.createElement('li')).classList.add('itinerary-li')
+
 
 /***/ }),
 /* 2 */
