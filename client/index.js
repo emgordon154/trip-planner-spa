@@ -46,10 +46,10 @@ function generateButtons(places) {
       let newLi= document.createElement('li')
       newLi.classList.add('itinerary-li')
 
-        let typeOfPlace = button.id.split('-')[0]
-        let whichItineraryPart = document.getElementById(typeOfPlace + '-list')
-        let selectElement = document.getElementById(typeOfPlace + '-choices')
-        let placeName = selectElement.value
+      let typeOfPlace = button.id.split('-')[0]
+      let whichItineraryPart = document.getElementById(typeOfPlace + '-list')
+      let selectElement = document.getElementById(typeOfPlace + '-choices')
+      let placeName = selectElement.value
   
       let newItineraryItem = createNewItineraryItem(button, placeName)
       newLi.append(newItineraryItem)
