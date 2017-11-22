@@ -99,5 +99,41 @@ select {
   background: #286090;
 }
 
+.remove-btn {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  font-size: 12px;
+  background: #d6615f;
+  border: 0;
+  color: #fff;
+}
 
+.remove-btn:hover {
+  background: #ff0000;
+}
 
+.remove-btn:active {
+  background: #f38b14;
+}
+
+.itinerary-li {
+  height: 25 px;
+  display: flex;
+  flex-direction: row;
+  align-items: center
+}
+
+.itinerary-place {
+  width: calc(100% - 25px)
+
+}
+
+h4 {
+  margin: 3px;
+  height: 20px
+}
+
+.list-group {
+  margin: 10px
+}

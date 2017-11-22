@@ -60,11 +60,93 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const mapboxgl = __webpack_require__(1);
+const buildMarker = __webpack_require__(3);
+
+mapboxgl.accessToken = "pk.eyJ1IjoiaGt3d2ViZXIiLCJhIjoiY2phOXRuaHRmMGJycDJ3cXR5bG43ZnJ3OCJ9.9neIakt1D1GK-lPDN6sh5Q";
+
+const fullstackCoords = [-74.009, 40.705] // NY
+// const fullstackCoords = [-87.6320523, 41.8881084] // CHI
+
+const map = new mapboxgl.Map({
+  container: "map",
+  center: fullstackCoords, // FullStack coordinates
+  zoom: 12, // starting zoom
+  style: "mapbox://styles/mapbox/streets-v10" // mapbox has lots of different map styles available.
+});
+
+const marker = buildMarker("activities", fullstackCoords);
+marker.addTo(map);
+
+var places = {}
+
+fetch('/api')
+  .then(result => result.json())
+  .then(result => {
+    [hotels, activities, restaurants] = result
+    places = {hotels, activities, restaurants}
+    // console.log(data)
+    hotels.forEach(hotel => {
+      let hotelEl = document.createElement('option')
+      hotelEl.textContent = hotel.name
+      document.getElementById('hotels-choices').append(hotelEl);
+    })
+    activities.forEach(activity => {
+      let activityEl = document.createElement('option')
+      activityEl.textContent = activity.name
+      document.getElementById('activities-choices').append(activityEl);
+    })
+    restaurants.forEach(restaurant => {
+      let restaurantEl = document.createElement('option')
+      restaurantEl.textContent = restaurant.name
+      document.getElementById('restaurants-choices').append(restaurantEl);
+    })
+
+  })
+  .catch(console.error)
+
+Array.from(document.getElementsByClassName('options-btn')).forEach(button =>
+  button.addEventListener('click', event => {
+    let newLi= document.createElement('li')
+    newLi.classList.add('itinerary-li')
+
+    let typeOfPlace = button.id.split('-')[0]
+    let whichItineraryPart = document.getElementById(typeOfPlace + '-list')
+    let selectElement = document.getElementById(typeOfPlace + '-choices')
+    let placeName = selectElement.value
+    let newItineraryItem = document.createElement('h4')
+    newItineraryItem.classList.add('itinerary-place')
+    newItineraryItem.textContent = placeName
+    newLi.append(newItineraryItem)
+
+
+    let newButton = document.createElement('button')
+    newButton.classList.add('remove-btn')
+    newButton.id = 'remove-' + placeName
+    newButton.textContent = 'x'
+    newButton.onclick = () => {
+      newLi.remove()
+    }
+    newLi.append(newButton)
+
+    whichItineraryPart.append(newLi)
+
+   
+    let place = places[typeOfPlace].find(place => place.name == placeName)
+    let newMarker = buildMarker(typeOfPlace, place.place.location) // forgive us Tom and Kate
+    newMarker.addTo(map)
+  })
+)
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var require;var require;(function(f){if(true){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.mapboxgl = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return require(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
@@ -531,52 +613,6 @@ module.exports={"$version":8,"$root":{"version":{"required":true,"type":"enum","
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const mapboxgl = __webpack_require__(0);
-const buildMarker = __webpack_require__(3);
-
-mapboxgl.accessToken = "pk.eyJ1IjoiaGt3d2ViZXIiLCJhIjoiY2phOXRuaHRmMGJycDJ3cXR5bG43ZnJ3OCJ9.9neIakt1D1GK-lPDN6sh5Q";
-
-const fullstackCoords = [-74.009, 40.705] // NY
-// const fullstackCoords = [-87.6320523, 41.8881084] // CHI
-
-const map = new mapboxgl.Map({
-  container: "map",
-  center: fullstackCoords, // FullStack coordinates
-  zoom: 12, // starting zoom
-  style: "mapbox://styles/mapbox/streets-v10" // mapbox has lots of different map styles available.
-});
-
-const marker = buildMarker("activities", fullstackCoords);
-marker.addTo(map);
-
-fetch('/api')
-  .then(result => result.json())
-  .then(([hotels, activities, restaurants]) => {
-    // console.log(data)
-    hotels.forEach(hotel => {
-      let hotelEl = document.createElement('option')
-      hotelEl.textContent = hotel.name
-      document.getElementById('hotels-choices').append(hotelEl);
-    })
-    activities.forEach(activity => {
-      let activityEl = document.createElement('option')
-      activityEl.textContent = activity.name
-      document.getElementById('activities-choices').append(activityEl);
-    })
-    restaurants.forEach(restaurant => {
-      let restaurantEl = document.createElement('option')
-      restaurantEl.textContent = restaurant.name
-      document.getElementById('restaurants-choices').append(restaurantEl);
-    })
-
-  })
-  .catch(console.error)
-
-
-/***/ }),
 /* 2 */
 /***/ (function(module, exports) {
 
@@ -607,7 +643,7 @@ module.exports = g;
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const { Marker } = __webpack_require__(0);
+const { Marker } = __webpack_require__(1);
 
 const iconURLs = {
   hotels: "http://i.imgur.com/D9574Cu.png",

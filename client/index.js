@@ -16,9 +16,13 @@ const map = new mapboxgl.Map({
 const marker = buildMarker("activities", fullstackCoords);
 marker.addTo(map);
 
+var places = {}
+
 fetch('/api')
   .then(result => result.json())
-  .then(([hotels, activities, restaurants]) => {
+  .then(result => {
+    [hotels, activities, restaurants] = result
+    places = {hotels, activities, restaurants}
     // console.log(data)
     hotels.forEach(hotel => {
       let hotelEl = document.createElement('option')
@@ -38,3 +42,36 @@ fetch('/api')
 
   })
   .catch(console.error)
+
+Array.from(document.getElementsByClassName('options-btn')).forEach(button =>
+  button.addEventListener('click', event => {
+    let newLi= document.createElement('li')
+    newLi.classList.add('itinerary-li')
+
+    let typeOfPlace = button.id.split('-')[0]
+    let whichItineraryPart = document.getElementById(typeOfPlace + '-list')
+    let selectElement = document.getElementById(typeOfPlace + '-choices')
+    let placeName = selectElement.value
+    let newItineraryItem = document.createElement('h4')
+    newItineraryItem.classList.add('itinerary-place')
+    newItineraryItem.textContent = placeName
+    newLi.append(newItineraryItem)
+
+
+    let newButton = document.createElement('button')
+    newButton.classList.add('remove-btn')
+    newButton.id = 'remove-' + placeName
+    newButton.textContent = 'x'
+    newButton.onclick = () => {
+      newLi.remove()
+    }
+    newLi.append(newButton)
+
+    whichItineraryPart.append(newLi)
+
+   
+    let place = places[typeOfPlace].find(place => place.name == placeName)
+    let newMarker = buildMarker(typeOfPlace, place.place.location) // forgive us Tom and Kate
+    newMarker.addTo(map)
+  })
+)
