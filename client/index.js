@@ -57,21 +57,29 @@ Array.from(document.getElementsByClassName('options-btn')).forEach(button =>
     newItineraryItem.textContent = placeName
     newLi.append(newItineraryItem)
 
-
     let newButton = document.createElement('button')
     newButton.classList.add('remove-btn')
     newButton.id = 'remove-' + placeName
     newButton.textContent = 'x'
     newButton.onclick = () => {
       newLi.remove()
+      const mhCoord = [-73.993791, 40.735884]
+      map.flyTo({center: mhCoord, zoom: 12})
     }
     newLi.append(newButton)
 
     whichItineraryPart.append(newLi)
 
-   
+
     let place = places[typeOfPlace].find(place => place.name == placeName)
     let newMarker = buildMarker(typeOfPlace, place.place.location) // forgive us Tom and Kate
     newMarker.addTo(map)
+
+    map.flyTo({
+      center: place.place.location,
+      zoom: 14
+    })
   })
 )
+
+// when you remove from itinerary: zoom back out -- all of mh centered?
